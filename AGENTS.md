@@ -23,3 +23,4 @@ Build a Pi usage-display plugin inspired by `@narumitw/pi-usage`. Show subscript
 
 - Follow Conventional Commits: `type(scope): summary`, with the scope optional.
 - Use a concise, lowercase type such as `feat`, `fix`, `docs`, `test`, `refactor`, `chore`, `build`, or `ci`.
+- Keep commits focused; split independent behavior, documentation, package metadata, or configuration changes into separate commits.
