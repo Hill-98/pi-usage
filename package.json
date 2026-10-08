@@ -18,9 +18,7 @@
   ],
   "files": [
     "dist",
-    "src",
-    "README.md",
-    "LICENSE"
+    "src"
   ],
   "pi": {
     "extensions": [
@@ -30,7 +28,7 @@
   "scripts": {
     "build": "tsdown",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types --test test/*.test.ts",
+    "test": "node --test",
     "lint": "biome check .",
     "check": "pnpm run build && pnpm run typecheck && pnpm test && pnpm run lint",
     "smoke:local": "pnpm run build && node --experimental-strip-types scripts/local-pi-smoke.ts",
@@ -42,12 +40,12 @@
     "@earendil-works/pi-tui": "*"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.0",
+    "@biomejs/biome": "2.5.15",
     "@earendil-works/pi-ai": "^1.0.0",
     "@earendil-works/pi-coding-agent": "^1.0.0",
     "@earendil-works/pi-tui": "^1.0.0",
     "@types/node": "^24.0.0",
     "tsdown": "^0.23.0",
-    "typescript": "^7.0.2"
+    "typescript": "~7.0.2"
   }
 }

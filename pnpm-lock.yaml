@@ -167,7 +167,7 @@ importers:
   .:
     devDependencies:
       '@biomejs/biome':
-        specifier: ^2.4.0
+        specifier: 2.5.15
         version: 2.5.15
       '@earendil-works/pi-ai':
         specifier: ^1.0.0
@@ -185,7 +185,7 @@ importers:
         specifier: ^0.23.0
         version: 0.23.0(typescript@7.0.2)
       typescript:
-        specifier: ^7.0.2
+        specifier: ~7.0.2
         version: 7.0.2
 
 packages:
