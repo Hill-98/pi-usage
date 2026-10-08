@@ -1,0 +1,53 @@
+{
+  "name": "@hill-98/pi-usage",
+  "version": "0.1.0",
+  "description": "Pi extension for provider-specific AI subscription quotas and API balances",
+  "homepage": "https://github.com/Hill-98/pi-usage",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Hill-98/pi-usage.git"
+  },
+  "type": "module",
+  "license": "MIT",
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "usage",
+    "quota",
+    "balance"
+  ],
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "pi": {
+    "extensions": [
+      "./dist/index.js"
+    ]
+  },
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc --noEmit",
+    "test": "node --experimental-strip-types --test test/*.test.ts",
+    "lint": "biome check .",
+    "check": "pnpm run build && pnpm run typecheck && pnpm test && pnpm run lint",
+    "smoke:local": "pnpm run build && node --experimental-strip-types scripts/local-pi-smoke.ts",
+    "prepack": "pnpm run build"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-ai": "*",
+    "@earendil-works/pi-tui": "*"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.0",
+    "@earendil-works/pi-ai": "^1.0.0",
+    "@earendil-works/pi-coding-agent": "^1.0.0",
+    "@earendil-works/pi-tui": "^1.0.0",
+    "@types/node": "^24.0.0",
+    "tsdown": "^0.23.0",
+    "typescript": "^7.0.2"
+  }
+}
