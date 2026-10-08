@@ -1,6 +1,6 @@
 {
   "name": "@hill-98/pi-usage",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Pi extension for provider-specific AI subscription quotas and API balances",
   "homepage": "https://github.com/Hill-98/pi-usage",
   "repository": {
