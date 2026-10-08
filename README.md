@@ -46,6 +46,7 @@ OpenAI Codex Pro is treated specially: **only its weekly window is displayed**, 
 - The extension uses Pi's runtime-resolved credentials; it does not read `auth.json` directly or save credentials.
 - Credentials are sent only to fixed provider endpoints after the active model and any resolved auth origin are checked against that provider's official origin.
 - Redirects are rejected, response bodies are bounded, and provider response bodies are not included in errors.
+- Normalized usage reports and refresh timestamps are cached per provider for five minutes in the system temporary directory; concurrent refreshes for the same provider are coalesced. Cache files use user-only permissions on POSIX, and credentials are never cached.
 - Provider usage endpoints and response formats can change. A provider without a supported numerical endpoint is reported as unsupported rather than having usage guessed.
 - Anthropic, Google, GitHub Copilot, and native OpenAI API-key usage are not currently included; they do not expose a compatible usage endpoint through the provider's ordinary Pi credential.
 

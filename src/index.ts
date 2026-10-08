@@ -8,10 +8,11 @@ import {
   queryUsage,
   renderReport,
   renderStatus,
+  USAGE_CACHE_TTL_MS,
 } from './usage.ts'
 
 const STATUS_KEY = 'pi-usage'
-const REFRESH_INTERVAL_MS = 5 * 60 * 1000
+const REFRESH_INTERVAL_MS = USAGE_CACHE_TTL_MS
 
 export default function piUsageExtension(pi: ExtensionAPI): void {
   let sessionActive = false
