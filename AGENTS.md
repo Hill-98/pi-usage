@@ -18,3 +18,8 @@ Build a Pi usage-display plugin inspired by `@narumitw/pi-usage`. Show subscript
 - Use the local Pi installation for integration checks when possible.
 - The local Pi has OpenAI Codex and Kimi subscription credentials. Use those existing local credentials only for testing; do not expose them in source, logs, or reports.
 - Run the available automated tests and report any checks that could not be run.
+
+## Commit messages
+
+- Follow Conventional Commits: `type(scope): summary`, with the scope optional.
+- Use a concise, lowercase type such as `feat`, `fix`, `docs`, `test`, `refactor`, `chore`, `build`, or `ci`.

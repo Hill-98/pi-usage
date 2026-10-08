@@ -8,15 +8,21 @@ Inspired by [`@narumitw/pi-usage`](https://www.npmjs.com/package/@narumitw/pi-us
 
 ## Install and use
 
-Build with TypeScript 7 and tsdown, then load the generated extension:
+Install the published package with Pi:
+
+```sh
+pi install npm:@hill-98/pi-usage
+```
+
+Run `/usage` to query the active provider. If the active model is not supported, `/usage` offers configured providers; you can also request one explicitly, for example `/usage kimi-coding`.
+
+For local development, build with TypeScript 7 and tsdown, then load the generated extension:
 
 ```sh
 pnpm install
 pnpm build
 pi --extension ./dist/index.js
 ```
-
-Run `/usage` to query the active provider. If the active model is not supported, `/usage` offers configured providers; you can also request one explicitly, for example `/usage kimi-coding`.
 
 After granting project trust, the project's `.pi/settings.json` loads the TypeScript source directly for local development. The published package uses the tsdown build in `dist/index.js`.
 
