@@ -16,6 +16,7 @@ const REFRESH_INTERVAL_MS = USAGE_CACHE_TTL_MS
 
 export default function piUsageExtension(pi: ExtensionAPI): void {
   let sessionActive = false
+  let startupLoadingShown = false
   let statusRequest = 0
   let refreshTimer: ReturnType<typeof setTimeout> | undefined
 
@@ -37,7 +38,10 @@ export default function piUsageExtension(pi: ExtensionAPI): void {
     }
   }
 
-  async function updateCurrentStatus(ctx: ExtensionContext): Promise<void> {
+  async function updateCurrentStatus(
+    ctx: ExtensionContext,
+    showLoading = false,
+  ): Promise<void> {
     const request = ++statusRequest
     clearTimer()
 
@@ -52,7 +56,9 @@ export default function piUsageExtension(pi: ExtensionAPI): void {
       return
     }
 
-    setStatus(ctx, 'usage…')
+    if (showLoading) {
+      setStatus(ctx, 'usage…')
+    }
     try {
       const report = await queryUsage(ctx, ctx.model)
       if (!sessionActive || request !== statusRequest) {
@@ -156,7 +162,9 @@ export default function piUsageExtension(pi: ExtensionAPI): void {
 
   pi.on('session_start', (_event, ctx) => {
     sessionActive = true
-    void updateCurrentStatus(ctx)
+    const showLoading = !startupLoadingShown
+    startupLoadingShown = true
+    void updateCurrentStatus(ctx, showLoading)
   })
 
   pi.on('model_select', (_event, ctx) => {
