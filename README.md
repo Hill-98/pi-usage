@@ -1,8 +1,6 @@
-# Pi Usage Display
+# Pi Usage
 
 A Pi extension that shows provider-specific subscription quotas and API balances. It keeps unlike metrics separate: a plan window, an API balance, and API spend are not treated as interchangeable.
-
-Package name: `@hill-98/pi-usage`.
 
 Inspired by [`@narumitw/pi-usage`](https://www.npmjs.com/package/@narumitw/pi-usage).
 
