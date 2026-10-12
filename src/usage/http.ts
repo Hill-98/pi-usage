@@ -1,6 +1,7 @@
 import type { Api, Model } from '@earendil-works/pi-ai'
 import { createBearerHeaders } from './auth.ts'
 import type {
+  HttpUsageProvider,
   ResolvedUsageAuth,
   UnknownRecord,
   UsageProvider,
@@ -10,7 +11,7 @@ const REQUEST_TIMEOUT_MS = 15_000
 const MAX_RESPONSE_BYTES = 1024 * 1024
 
 export function assertOfficialOrigin(
-  provider: UsageProvider,
+  provider: Pick<UsageProvider, 'name' | 'origins'>,
   model: Model<Api>,
   auth: ResolvedUsageAuth,
 ): void {
@@ -29,7 +30,7 @@ export function assertOfficialOrigin(
 }
 
 export function createRequestHeaders(
-  provider: UsageProvider,
+  provider: HttpUsageProvider,
   auth: ResolvedUsageAuth,
 ): Record<string, string> {
   return (
@@ -41,9 +42,13 @@ export async function fetchJson(
   url: string,
   headers: Record<string, string>,
   fetchImpl: typeof fetch,
+  timeoutMs = REQUEST_TIMEOUT_MS,
 ): Promise<UnknownRecord> {
+  if (timeoutMs <= 0) {
+    throw new Error('The provider usage request timed out.')
+  }
   const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
+  const timeout = setTimeout(() => controller.abort(), timeoutMs)
   try {
     const response = await fetchImpl(url, {
       method: 'GET',

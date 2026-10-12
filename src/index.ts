@@ -14,7 +14,10 @@ import {
 const STATUS_KEY = 'pi-usage'
 const REFRESH_INTERVAL_MS = USAGE_CACHE_TTL_MS
 
-export default function piUsageExtension(pi: ExtensionAPI): void {
+export default function piUsageExtension(
+  pi: ExtensionAPI,
+  usageQuery: typeof queryUsage = queryUsage,
+): void {
   let sessionActive = false
   let startupLoadingShown = false
   let statusRequest = 0
@@ -60,7 +63,7 @@ export default function piUsageExtension(pi: ExtensionAPI): void {
       setStatus(ctx, 'usage…')
     }
     try {
-      const report = await queryUsage(ctx, ctx.model)
+      const report = await usageQuery(ctx, ctx.model)
       if (!sessionActive || request !== statusRequest) {
         return
       }
@@ -144,7 +147,7 @@ export default function piUsageExtension(pi: ExtensionAPI): void {
         return
       }
       try {
-        const report = await queryUsage(ctx, model)
+        const report = await usageQuery(ctx, model)
         ctx.ui.notify(renderReport(report), 'info')
         if (ctx.model?.provider === model.provider) {
           setStatus(ctx, renderStatus(report))

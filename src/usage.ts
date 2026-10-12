@@ -1,6 +1,5 @@
 import type { Api, Model } from '@earendil-works/pi-ai'
 import type { ExtensionContext } from '@earendil-works/pi-coding-agent'
-import type { UsageCacheOptions } from './usage/cache.ts'
 import { withUsageCache } from './usage/cache.ts'
 import {
   assertOfficialOrigin,
@@ -8,12 +7,16 @@ import {
   fetchJson,
 } from './usage/http.ts'
 import { USAGE_PROVIDERS } from './usage/providers/index.ts'
-import type { ProviderChoice, ResolvedUsageAuth } from './usage/types.ts'
+import type {
+  ProviderChoice,
+  ResolvedUsageAuth,
+  UsageQueryOptions,
+} from './usage/types.ts'
 
 export type { UsageCacheOptions } from './usage/cache.ts'
 export { USAGE_CACHE_TTL_MS } from './usage/cache.ts'
 export { renderReport, renderStatus } from './usage/format.ts'
-export type { UsageReport } from './usage/types.ts'
+export type { UsageQueryOptions, UsageReport } from './usage/types.ts'
 
 export function getSupportedProviders(): ProviderChoice[] {
   return USAGE_PROVIDERS.map(({ id, name, aliases }) => ({
@@ -27,7 +30,7 @@ export async function queryUsage(
   ctx: ExtensionContext,
   model: Model<Api>,
   fetchImpl: typeof fetch = globalThis.fetch,
-  cacheOptions: UsageCacheOptions = {},
+  options: UsageQueryOptions = {},
 ) {
   const provider = USAGE_PROVIDERS.find((item) => item.id === model?.provider)
   if (!provider) {
@@ -35,7 +38,16 @@ export async function queryUsage(
   }
 
   provider.validateAuth?.(ctx, model)
-  const auth = await ctx.modelRegistry.getApiKeyAndHeaders(model)
+  let auth:
+    | Awaited<
+        ReturnType<ExtensionContext['modelRegistry']['getApiKeyAndHeaders']>
+      >
+    | undefined
+  try {
+    auth = await ctx.modelRegistry.getApiKeyAndHeaders(model)
+  } catch {
+    // Auth failures may contain private provider response details.
+  }
   if (!auth?.ok) {
     throw new Error(
       `No valid ${provider.name} credentials were found. Sign in again or check the provider setup.`,
@@ -43,6 +55,10 @@ export async function queryUsage(
   }
 
   assertOfficialOrigin(provider, model, auth)
+  if ('query' in provider) {
+    return provider.query({ ctx, model, auth, fetchImpl, options })
+  }
+
   const headers = createRequestHeaders(provider, auth)
   const url =
     typeof provider.url === 'function' ? provider.url(auth) : provider.url
@@ -56,6 +72,6 @@ export async function queryUsage(
       const payload = await fetchJson(url, headers, fetchImpl)
       return provider.normalize(payload, auth as ResolvedUsageAuth)
     },
-    cacheOptions,
+    options,
   )
 }

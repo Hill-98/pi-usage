@@ -100,7 +100,7 @@ export function renderStatus(report: UsageReport): string {
   return `${report.provider}: ${report.status}`
 }
 
-function formatCountdown(timestamp: number): string {
+export function formatCountdown(timestamp: number): string {
   const seconds = Math.max(0, Math.ceil((timestamp - Date.now()) / 1000))
   if (seconds < 60) {
     return `${seconds}s`

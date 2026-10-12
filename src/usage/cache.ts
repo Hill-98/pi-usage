@@ -163,7 +163,7 @@ function isUsageReport(value: unknown): value is UsageReport {
     typeof report.provider === 'string' &&
     report.provider.length <= 200 &&
     Array.isArray(report.lines) &&
-    report.lines.length <= 32 &&
+    report.lines.length <= 64 &&
     report.lines.every(
       (line) => typeof line === 'string' && line.length <= 1000,
     ) &&

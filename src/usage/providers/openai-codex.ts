@@ -10,7 +10,7 @@ import type { UnknownRecord, UsageProvider, UsageWindow } from '../types.ts'
 export const openAICodexProvider: UsageProvider = {
   id: 'openai-codex',
   name: 'OpenAI Codex',
-  aliases: ['openai', 'codex'],
+  aliases: ['codex'],
   origins: ['https://chatgpt.com'],
   url: 'https://chatgpt.com/backend-api/wham/usage',
   validateAuth: (ctx, model) => {

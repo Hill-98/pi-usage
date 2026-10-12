@@ -4,12 +4,14 @@ import { miniMaxGlobalProvider } from './minimax.ts'
 import { miniMaxChinaProvider } from './minimax-cn.ts'
 import { moonshotGlobalProvider } from './moonshotai.ts'
 import { moonshotChinaProvider } from './moonshotai-cn.ts'
+import { openAIProvider } from './openai.ts'
 import { openAICodexProvider } from './openai-codex.ts'
 import { openCodeGoProvider } from './opencode-go.ts'
 import { openRouterProvider } from './openrouter.ts'
 import { vercelAIGatewayProvider } from './vercel-ai-gateway.ts'
 
 export const USAGE_PROVIDERS = [
+  openAIProvider,
   openAICodexProvider,
   kimiCodingProvider,
   deepSeekProvider,

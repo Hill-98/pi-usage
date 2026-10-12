@@ -3,7 +3,7 @@ import { resolve } from 'node:path'
 
 const cliArgs = process.argv.slice(2)
 const positionalArgs = cliArgs[0] === '--' ? cliArgs.slice(1) : cliArgs
-const provider = positionalArgs[0] ?? 'openai-codex'
+const provider = positionalArgs[0] ?? 'openai'
 const modelId = positionalArgs[1] ?? defaultModel(provider)
 const extension = resolve('dist/index.js')
 const child = spawn(
@@ -51,6 +51,26 @@ child.stdout.on('data', (chunk) => {
       continue
     }
 
+    if (record.type === 'response' && record.success === false) {
+      finish(false, `Pi rejected the ${record.command ?? 'RPC'} command.`)
+      return
+    }
+
+    if (
+      record.type === 'response' &&
+      record.command === 'get_state' &&
+      record.success
+    ) {
+      if (record.data?.model?.provider !== provider) {
+        finish(false, 'Pi did not select the requested provider.')
+        return
+      }
+      child.stdin.write(
+        `${JSON.stringify({ id: 'commands', type: 'get_commands' })}\n`,
+      )
+      continue
+    }
+
     if (
       !requestSent &&
       record.type === 'response' &&
@@ -84,6 +104,28 @@ child.stdout.on('data', (chunk) => {
         )
         return
       }
+      if (provider === 'openai') {
+        const labels = [...message.matchAll(/^• Plan ([^:]+):/gm)].map(
+          (match) => match[1],
+        )
+        if (
+          !message.startsWith('OpenAI (ChatGPT subscription) usage\n') ||
+          !message.includes('https://chatgpt.com/settings/usage') ||
+          !message.includes('experimental ChatGPT companion endpoints') ||
+          labels.length === 0
+        ) {
+          finish(
+            false,
+            'Pi did not return numerical OpenAI companion usage. Sign in to openai and openai-codex with the same account/workspace.',
+          )
+          return
+        }
+        finish(
+          true,
+          `openai: companion plan report received (${labels.join(', ')}).`,
+        )
+        return
+      }
       const labels = [...message.matchAll(/^• ([^:]+):/gm)].map(
         (match) => match[1],
       )
@@ -112,9 +154,7 @@ child.on('exit', (code) => {
   }
 })
 
-child.stdin.write(
-  `${JSON.stringify({ id: 'commands', type: 'get_commands' })}\n`,
-)
+child.stdin.write(`${JSON.stringify({ id: 'state', type: 'get_state' })}\n`)
 
 function finish(success: boolean, message: string): void {
   if (finished) {
@@ -133,7 +173,7 @@ function finish(success: boolean, message: string): void {
 }
 
 function defaultModel(providerId: string): string {
-  if (providerId === 'openai-codex') {
+  if (providerId === 'openai' || providerId === 'openai-codex') {
     return 'gpt-5.5'
   }
   if (providerId === 'kimi-coding') {
@@ -172,6 +212,7 @@ interface RpcRecord {
   notifyType?: string
   message?: string
   data?: {
+    model?: { provider?: string }
     commands?: Array<{ name: string }>
   }
 }
